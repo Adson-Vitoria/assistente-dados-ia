@@ -1,0 +1,13 @@
+data,regiao,produto,vendedor,quantidade,valor_venda
+2026-01-05,Centro-Oeste,Notebook,Ana,2,7000
+2026-01-10,Sudeste,Monitor,Bruno,4,4800
+2026-01-15,Sul,Teclado,Carla,10,1500
+2026-01-20,Nordeste,Notebook,Diego,1,3500
+2026-02-03,Centro-Oeste,Monitor,Ana,3,3600
+2026-02-08,Sudeste,Notebook,Bruno,3,10500
+2026-02-14,Sul,Teclado,Carla,8,1200
+2026-02-20,Nordeste,Monitor,Diego,2,2400
+2026-03-04,Centro-Oeste,Notebook,Ana,4,14000
+2026-03-10,Sudeste,Teclado,Bruno,12,1800
+2026-03-16,Sul,Monitor,Carla,5,6000
+2026-03-22,Nordeste,Notebook,Diego,2,7000

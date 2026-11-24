@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assistente de dados com IA</title>
+<style>
+:root {
+  font-family:Inter,Arial,sans-serif;
+  color:#152939;
+  background:#f3f6f8;
+  line-height:1.5
+}
+* {
+  box-sizing:border-box
+}
+body {
+  margin:0
+}
+header {
+  background:#102c3c;
+  color:white;
+  padding:32px max(24px,calc((100% - 1120px)/2));
+  border-bottom:4px solid #32c6aa
+}
+header p {
+  color:#c6d9e2;
+  margin:5px 0 0
+}
+h1 {
+  font-size:30px;
+  letter-spacing:-1px;
+  margin:0
+}
+h2 {
+  font-size:19px;
+  margin:0 0 12px
+}
+main {
+  max-width:1168px;
+  margin:30px auto;
+  padding:0 24px;
+  display:grid;
+  grid-template-columns:330px 1fr;
+  gap:22px
+}
+.card {
+  background:white;
+  border:1px solid #dce5eb;
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:20px
+}
+p {
+  margin:10px 0 18px
+}
+.muted {
+  color:#536c7b;
+  font-size:14px
+}
+label {
+  display:block;
+  font-weight:600;
+  margin-bottom:8px
+}
+input,textarea,button {
+  font:inherit
+}
+input[type=file] {
+  width:100%;
+  font-size:13px
+}
+textarea {
+  width:100%;
+  padding:13px;
+  border:1px solid #aabdc9;
+  border-radius:8px;
+  resize:vertical;
+  min-height:105px
+}
+button {
+  border:0;
+  border-radius:7px;
+  background:#12685f;
+  color:white;
+  padding:11px 16px;
+  cursor:pointer;
+  font-weight:600
+}
+button.secondary {
+  background:#ecf4f6;
+  color:#244f61;
+  margin-top:12px;
+  width:100%
+}
+button:disabled {
+  opacity:.5;
+  cursor:wait
+}
+button:focus-visible,a:focus-visible {
+  outline:3px solid #efac46;
+  outline-offset:2px
+}
+.example {
+  display:block;
+  text-align:left;
+  width:100%;
+  background:#f4f7f9;
+  color:#294857;
+  margin-top:8px;
+  padding:12px;
+  font-size:14px;
+  font-weight:400
+}
+.actions {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:12px
+}
+.state {
+  font-size:13px;
+  color:#536c7b
+}
+.error {
+  color:#a62c2c;
+  background:#fff1f1;
+  padding:12px;
+  border-radius:7px;
+  margin-top:15px
+}
+.table-wrap {
+  overflow:auto
+}
+table {
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px
+}
+th,td {
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid #e0e8ed;
+  white-space:nowrap
+}
+th {
+  color:#4a6676;
+  background:#f4f7fa;
+  font-weight:600
+}
+pre {
+  overflow:auto;
+  background:#112d3d;
+  color:#e3f2f8;
+  padding:18px;
+  border-radius:8px;
+  font-size:13px;
+  white-space:pre-wrap
+}
+details {
+  margin-top:20px
+}
+summary {
+  cursor:pointer;
+  font-size:14px;
+  font-weight:600
+}
+.barrow {
+  display:grid;
+  grid-template-columns:110px 1fr 85px;
+  gap:12px;
+  align-items:center;
+  font-size:13px;
+  margin:12px 0
+}
+.track {
+  background:#edf2f5;
+  height:16px;
+  border-radius:3px
+}
+.bar {
+  background:#1b8b7e;
+  height:100%;
+  border-radius:3px
+}
+.value {
+  text-align:right
+}
+.empty {
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#718795;
+  text-align:center
+}
+.result-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px
+}
+#export {
+  background:#edf4f7;
+  color:#285268;
+  font-size:13px;
+  padding:7px 12px
+}
+#columns {
+  font-size:13px;
+  overflow-wrap:anywhere
+}
+footer {
+  max-width:1120px;
+  margin:10px auto 32px;
+  padding:0 24px;
+  color:#607786;
+  font-size:12px
+}
+@media(max-width:800px) {
+  main {
+  grid-template-columns:1fr
+}
+header {
+  padding:24px
+}
+h1 {
+  font-size:25px
+}
+.card {
+  padding:18px
+}
+.barrow {
+  grid-template-columns:90px 1fr 70px
+}
+
+}
+
+</style></head><body>
+<header><h1>Assistente de dados com IA</h1><p>Explore uma planilha e confira os números por trás de cada resposta.</p></header>
+<main><aside>
+<section class="card"><h2>Sua base de dados</h2><label for="file">Carregar CSV</label><input id="file" type="file" accept=".csv,text/csv"><p class="muted">UTF-8 · até 5 MB · vírgula, ponto e vírgula ou tabulação.</p><button id="sample" class="secondary">Usar vendas fictícias</button><p id="base-info" class="muted">Carregue um arquivo para começar.</p><div id="columns"></div></section>
+<section class="card"><h2>Perguntas de exemplo</h2><p class="muted">Demonstração guiada com SQL predefinido, disponível sem API na base fictícia.</p><div id="examples"></div></section>
+</aside><div>
+<section class="card"><h2>O que você quer descobrir?</h2><label for="question" class="muted">Pergunta sobre os dados</label><textarea id="question" maxlength="1000" placeholder="Ex.: Qual região teve o maior faturamento?"></textarea><div class="actions"><button id="ask">Analisar com IA</button><span id="api-state" class="state"></span></div><div id="status" role="status" aria-live="polite"></div></section>
+<section class="card"><div class="result-head"><h2>Resultado</h2><button id="export" hidden>Baixar CSV</button></div><div id="result" class="empty">A resposta e a consulta utilizada aparecerão aqui.</div><div id="chart"></div><div id="result-table" class="table-wrap"></div><details id="sql-details" hidden><summary>Conferir consulta SQL</summary><pre id="sql"></pre></details></section>
+<details class="card"><summary>Prévia da base carregada</summary><div id="preview" class="table-wrap"></div></details>
+</div></main><footer>Projeto de portfólio · Python, SQLite e LLMs. Base e cálculos ficam no servidor local. Perguntas livres enviam a pergunta e os nomes e tipos das colunas à OpenAI. Podem consumir créditos de API.</footer>
+<script>
+const element = id => document.getElementById(id);
+let dataset = null;
+let result = null;
+let busy = false;
+
+function textNode(tag, text) {
+  const node = document.createElement(tag);
+  node.textContent = text;
+  return node;
+}
+
+function renderTable(target, columns, rows) {
+  target.replaceChildren();
+  const table = document.createElement("table");
+  const header = document.createElement("tr");
+  columns.forEach(column => header.append(textNode("th", column)));
+  table.append(header);
+  rows.forEach(row => {
+    const tableRow = document.createElement("tr");
+    row.forEach(value => tableRow.append(textNode("td", value === null ? "—" : value)));
+    table.append(tableRow);
+  });
+  target.append(table);
+}
+
+function showStatus(message, error = false) {
+  element("status").textContent = message;
+  element("status").className = error ? "error" : "muted";
+}
+
+function setBusy(value) {
+  busy = value;
+  document.querySelectorAll("button").forEach(button => button.disabled = value);
+  element("file").disabled = value;
+}
+
+async function request(path, body) {
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await response.json();
+  if (!response.ok) throw Error(data.error || "Falha na solicitação.");
+  return data;
+}
+
+function clearResult() {
+  result = null;
+  element("result").className = "empty";
+  element("result").textContent = "Faça uma pergunta sobre a base carregada.";
+  element("result-table").replaceChildren();
+  element("chart").replaceChildren();
+  element("sql-details").hidden = true;
+  element("export").hidden = true;
+}
+
+async function loadDataset(sample = false) {
+  if (busy) return;
+  const file = element("file").files[0];
+  if (!sample && !file) return;
+  setBusy(true);
+  showStatus("Carregando a base…");
+  try {
+    let body = {};
+    if (!sample) {
+      if (file.size > 5 * 1024 * 1024) throw Error("O limite é de 5 MB.");
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let binary = "";
+      for (const byte of bytes) binary += String.fromCharCode(byte);
+      body = { data: btoa(binary) };
+    }
+    const data = await request(sample ? "/api/sample" : "/api/upload", body);
+    dataset = data.dataset;
+    element("base-info").textContent = data.count + " registros · " + data.schema.length + " colunas";
+    element("columns").textContent = data.schema.map(column => column.name + " (" + column.type + ")").join(" · ");
+    renderTable(element("preview"), data.schema.map(column => column.name), data.preview);
+    clearResult();
+    showStatus("Base carregada. Confira os tipos das colunas na lateral.");
+  } catch (error) {
+    showStatus(error.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+function renderChart(data) {
+  element("chart").replaceChildren();
+  const supported = data.columns.length === 2 &&
+    data.rows.length > 0 && data.rows.length <= 20 &&
+    data.rows.every(row => typeof row[1] === "number" && row[1] >= 0);
+  if (!supported) return;
+  const maximum = Math.max(...data.rows.map(row => row[1]));
+  data.rows.forEach(row => {
+    const barRow = document.createElement("div");
+    barRow.className = "barrow";
+    barRow.append(textNode("span", String(row[0])));
+    const track = document.createElement("div");
+    track.className = "track";
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.width = (maximum ? row[1] / maximum * 100 : 0) + "%";
+    track.append(bar);
+    barRow.append(track);
+    const value = textNode("span", row[1].toLocaleString("pt-BR", { maximumFractionDigits: 2 }));
+    value.className = "value";
+    barRow.append(value);
+    element("chart").append(barRow);
+  });
+}
+
+async function ask(example = null) {
+  if (busy) return;
+  if (!dataset) {
+    showStatus("Carregue uma base primeiro.", true);
+    return;
+  }
+  setBusy(true);
+  showStatus("Consultando…");
+  clearResult();
+  try {
+    const data = await request("/api/ask", {
+      dataset, question: element("question").value, example
+    });
+    element("result").className = "";
+    if (data.clarification) {
+      element("result").textContent = data.clarification;
+      showStatus("A IA precisa de mais contexto. Complete sua pergunta e envie novamente.");
+      return;
+    }
+    result = data;
+    element("result").textContent = data.rows.length
+      ? data.summary
+      : "A consulta não encontrou registros para os critérios informados.";
+    renderTable(element("result-table"), data.columns, data.rows);
+    renderChart(data);
+    element("sql").textContent = data.sql;
+    element("sql-details").hidden = false;
+    element("export").hidden = false;
+    const limitNotice = data.truncated ? " · Exibição limitada às primeiras 200 linhas." : "";
+    showStatus(data.mode + limitNotice);
+  } catch (error) {
+    element("result").textContent = "A consulta não foi concluída.";
+    showStatus(error.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+function csvCell(value) {
+  let text = value === null ? "" : String(value);
+  // Evita execução de fórmulas quando o resultado for aberto em uma planilha.
+  if (/^[=+@\-\t\r]/.test(text)) text = "'" + text;
+  return '"' + text.replaceAll('"', '""') + '"';
+}
+
+function exportResult() {
+  if (!result) return;
+  const content = "\uFEFF" + [result.columns, ...result.rows]
+    .map(row => row.map(csvCell).join(";"))
+    .join("\r\n");
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([content], { type: "text/csv;charset=utf-8" }));
+  link.download = "resultado.csv";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+element("sample").onclick = () => loadDataset(true);
+element("file").onchange = () => loadDataset();
+element("ask").onclick = () => ask();
+element("export").onclick = exportResult;
+
+fetch("/api/config")
+  .then(response => response.json())
+  .then(config => {
+    element("api-state").textContent = config.ai_enabled
+      ? "API configurada"
+      : "API pendente · exemplos disponíveis";
+    config.examples.forEach(example => {
+      const button = textNode("button", example.question);
+      button.className = "example";
+      button.onclick = () => {
+        element("question").value = example.question;
+        ask(example.id);
+      };
+      element("examples").append(button);
+    });
+  })
+  .catch(() => showStatus("Falha ao carregar a configuração.", true));
+</script></body></html>

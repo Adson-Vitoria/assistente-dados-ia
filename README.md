@@ -4,7 +4,7 @@ Envie um CSV, faça uma pergunta em português e confira o resultado junto da co
 
 ## Executar
 
-Requer Python 3.10 ou superior. Utiliza a biblioteca padrão do Python e um navegador moderno.
+Requer Python 3.11 ou superior. Utiliza a biblioteca padrão do Python e um navegador moderno.
 
 1. Baixe e extraia o projeto.
 2. Abra o PowerShell na pasta que contém server.py.
@@ -59,7 +59,7 @@ python -m unittest discover -s tests -v
 python evaluate.py
 ```
 
-Os testes locais verificam cálculos do exemplo, preservação de identificadores, CSV inválido, limite de resultados e bloqueio de consultas proibidas. O workflow do GitHub executa esses testes em Python 3.10 e 3.12, sem segredo de API.
+Os testes locais verificam cálculos do exemplo, preservação de identificadores, CSV inválido, limite de resultados e bloqueio de consultas proibidas. O workflow do GitHub executa esses testes em Python 3.11 e 3.12, sem segredo de API.
 
 evaluate.py faz quatro chamadas reais à API, executa as consultas propostas e compara as linhas com resultados de referência. O relatório inclui acertos e erros. A comparação aceita aliases diferentes e exige os mesmos valores e ordem. A amostra é pequena e serve para iniciar a avaliação.
 
